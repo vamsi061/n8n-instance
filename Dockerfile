@@ -1,9 +1,9 @@
-# Start from official n8n image (Alpine-based)
-FROM n8nio/n8n:latest
+# Pin version — DO NOT use :latest
+FROM n8nio/n8n:2.2.6
 
 USER root
 
-# Install Chromium + required dependencies on Alpine
+# Install Chromium and dependencies
 RUN apk add --no-cache \
     chromium \
     nss \
@@ -19,12 +19,12 @@ RUN apk add --no-cache \
     nodejs \
     npm
 
-# Install Playwright (Chromium only, no need for full bundle)
-RUN npm install -g playwright && \
-    npx playwright install chromium
+# Install Playwright (Chromium only)
+RUN npm install -g playwright@latest && \
+    npx playwright install chromium --with-deps
 
-# Environment variable so Playwright can find Chromium
+# Environment variables
 ENV PLAYWRIGHT_BROWSERS_PATH=/root/.cache/ms-playwright
-ENV CHROMIUM_PATH=/usr/bin/chromium-browser
+ENV CHROMIUM_PATH=/usr/bin/chromium
 
 USER node
